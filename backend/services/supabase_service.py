@@ -271,6 +271,282 @@ class SupabaseService:
             return []
 
     # ==========================================
+    # CAMPUS STRUCTURED KNOWLEDGE (SUPABASE)
+    # ==========================================
+    def query_exams(self, subject: Optional[str] = None) -> List[Dict[str, Any]]:
+        if not self.is_connected or not self.client:
+            return []
+        try:
+            query = self.client.table("exams").select("*")
+            if subject:
+                s = subject.strip()
+                query = query.or_(f"subject.ilike.%{s}%,code.ilike.%{s}%,title.ilike.%{s}%")
+            else:
+                query = query.order("iso_date", desc=False)
+            res = query.execute()
+            return res.data or []
+        except Exception as e:
+            print(f"[SupabaseService] Query exams error: {e}")
+            return []
+
+    def query_timetable(self, day: Optional[str] = None, subject: Optional[str] = None) -> List[Dict[str, Any]]:
+        if not self.is_connected or not self.client:
+            return []
+        try:
+            query = self.client.table("timetable").select("*")
+            if day and subject:
+                query = query.ilike("day", f"%{day.strip()}%").ilike("subject", f"%{subject.strip()}%")
+            elif day:
+                query = query.ilike("day", f"%{day.strip()}%")
+            elif subject:
+                query = query.ilike("subject", f"%{subject.strip()}%")
+            res = query.order("id", desc=False).execute()
+            return res.data or []
+        except Exception as e:
+            print(f"[SupabaseService] Query timetable error: {e}")
+            return []
+
+    def query_faculty(self, name_or_subject: Optional[str] = None) -> List[Dict[str, Any]]:
+        if not self.is_connected or not self.client:
+            return []
+        try:
+            query = self.client.table("faculty").select("*")
+            if name_or_subject:
+                q = name_or_subject.strip()
+                query = query.or_(f"name.ilike.%{q}%,department.ilike.%{q}%")
+            res = query.order("id", desc=False).execute()
+            return res.data or []
+        except Exception as e:
+            print(f"[SupabaseService] Query faculty error: {e}")
+            return []
+
+    def query_classrooms(self, room_name: Optional[str] = None) -> List[Dict[str, Any]]:
+        if not self.is_connected or not self.client:
+            return []
+        try:
+            query = self.client.table("classrooms").select("*")
+            if room_name:
+                q = room_name.strip()
+                query = query.or_(f"name.ilike.%{q}%,block.ilike.%{q}%")
+            res = query.order("id", desc=False).execute()
+            return res.data or []
+        except Exception as e:
+            print(f"[SupabaseService] Query classrooms error: {e}")
+            return []
+
+    def query_notices(self, category: Optional[str] = None) -> List[Dict[str, Any]]:
+        if not self.is_connected or not self.client:
+            return []
+        try:
+            query = self.client.table("notices").select("*")
+            if category:
+                query = query.ilike("category", f"%{category.strip()}%")
+            res = query.order("date", desc=True).execute()
+            return res.data or []
+        except Exception as e:
+            print(f"[SupabaseService] Query notices error: {e}")
+            return []
+
+    def query_assignments(self, subject: Optional[str] = None) -> List[Dict[str, Any]]:
+        if not self.is_connected or not self.client:
+            return []
+        try:
+            query = self.client.table("assignments").select("*")
+            if subject:
+                query = query.ilike("subject", f"%{subject.strip()}%")
+            res = query.order("id", desc=False).execute()
+            return res.data or []
+        except Exception as e:
+            print(f"[SupabaseService] Query assignments error: {e}")
+            return []
+
+    def query_events(self) -> List[Dict[str, Any]]:
+        if not self.is_connected or not self.client:
+            return []
+        try:
+            res = self.client.table("events").select("*").order("date", desc=False).execute()
+            return res.data or []
+        except Exception as e:
+            print(f"[SupabaseService] Query events error: {e}")
+            return []
+
+    def query_facilities(self, name: Optional[str] = None) -> List[Dict[str, Any]]:
+        if not self.is_connected or not self.client:
+            return []
+        try:
+            query = self.client.table("facilities").select("*")
+            if name:
+                query = query.ilike("name", f"%{name.strip()}%")
+            res = query.order("id", desc=False).execute()
+            return res.data or []
+        except Exception as e:
+            print(f"[SupabaseService] Query facilities error: {e}")
+            return []
+
+    def sync_campus_knowledge(self) -> Dict[str, Any]:
+        """
+        Seeds campus structured entities (exams, timetable, faculty, etc.)
+        from data/campus_knowledge.json into Supabase if empty.
+        """
+        if not self.is_connected or not self.client:
+            return {"success": False, "message": "Supabase not connected"}
+
+        json_path = DATA_DIR / "campus_knowledge.json"
+        if not json_path.exists():
+            return {"success": False, "message": "campus_knowledge.json not found"}
+
+        try:
+            import json
+            with open(json_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+
+            # 1. Exams
+            ex_res = self.client.table("exams").select("id", count="exact").limit(1).execute()
+            if getattr(ex_res, "count", 0) == 0:
+                exams_payload = []
+                for ex in data.get("exams", []):
+                    exams_payload.append({
+                        "id": ex["id"],
+                        "subject": ex["subject"],
+                        "code": ex["code"],
+                        "title": ex["title"],
+                        "date": ex["date"],
+                        "iso_date": ex.get("iso_date"),
+                        "time": ex["time"],
+                        "duration": ex.get("duration"),
+                        "room": ex["room"],
+                        "block": ex["block"],
+                        "instructor": ex["instructor"],
+                        "format": ex.get("format"),
+                        "syllabus": ex.get("syllabus")
+                    })
+                if exams_payload:
+                    self.client.table("exams").upsert(exams_payload).execute()
+
+            # 2. Timetable
+            tt_res = self.client.table("timetable").select("id", count="exact").limit(1).execute()
+            if getattr(tt_res, "count", 0) == 0:
+                tt_payload = []
+                for day_item in data.get("timetable", []):
+                    d = day_item["day"]
+                    for slot in day_item.get("slots", []):
+                        tt_payload.append({
+                            "day": d,
+                            "time": slot["time"],
+                            "subject": slot["subject"],
+                            "code": slot.get("code"),
+                            "room": slot["room"],
+                            "instructor": slot["instructor"],
+                            "type": slot.get("type", "Lecture")
+                        })
+                if tt_payload:
+                    self.client.table("timetable").insert(tt_payload).execute()
+
+            # 3. Faculty
+            fac_res = self.client.table("faculty").select("id", count="exact").limit(1).execute()
+            if getattr(fac_res, "count", 0) == 0:
+                fac_payload = []
+                for fac in data.get("faculty", []):
+                    fac_payload.append({
+                        "name": fac["name"],
+                        "title": fac["title"],
+                        "department": fac["department"],
+                        "email": fac["email"],
+                        "phone": fac.get("phone"),
+                        "office": fac["office"],
+                        "office_hours": fac["office_hours"],
+                        "subjects": fac.get("subjects", []),
+                        "research": fac.get("research")
+                    })
+                if fac_payload:
+                    self.client.table("faculty").insert(fac_payload).execute()
+
+            # 4. Classrooms
+            cr_res = self.client.table("classrooms").select("id", count="exact").limit(1).execute()
+            if getattr(cr_res, "count", 0) == 0:
+                cr_payload = []
+                for cr in data.get("classrooms", []):
+                    cr_payload.append({
+                        "name": cr["name"],
+                        "block": cr["block"],
+                        "floor": cr["floor"],
+                        "capacity": cr.get("capacity"),
+                        "facilities": cr.get("facilities", []),
+                        "directions": cr["directions"]
+                    })
+                if cr_payload:
+                    self.client.table("classrooms").upsert(cr_payload).execute()
+
+            # 5. Notices
+            nt_res = self.client.table("notices").select("id", count="exact").limit(1).execute()
+            if getattr(nt_res, "count", 0) == 0:
+                nt_payload = []
+                for noti in data.get("notices", []):
+                    nt_payload.append({
+                        "id": noti["id"],
+                        "title": noti["title"],
+                        "category": noti["category"],
+                        "priority": noti["priority"],
+                        "date": noti["date"],
+                        "details": noti["details"],
+                        "action": noti.get("action")
+                    })
+                if nt_payload:
+                    self.client.table("notices").upsert(nt_payload).execute()
+
+            # 6. Assignments
+            as_res = self.client.table("assignments").select("id", count="exact").limit(1).execute()
+            if getattr(as_res, "count", 0) == 0:
+                as_payload = []
+                for asn in data.get("assignments", []):
+                    as_payload.append({
+                        "subject": asn["subject"],
+                        "title": asn["title"],
+                        "due_date": asn["due_date"],
+                        "portal": asn["portal"],
+                        "weightage": asn.get("weightage"),
+                        "notes": asn.get("notes")
+                    })
+                if as_payload:
+                    self.client.table("assignments").insert(as_payload).execute()
+
+            # 7. Events
+            ev_res = self.client.table("events").select("id", count="exact").limit(1).execute()
+            if getattr(ev_res, "count", 0) == 0:
+                ev_payload = []
+                for ev in data.get("events", []):
+                    ev_payload.append({
+                        "title": ev["title"],
+                        "category": ev["category"],
+                        "date": ev["date"],
+                        "time": ev["time"],
+                        "venue": ev["venue"],
+                        "organizer": ev["organizer"],
+                        "highlights": ev.get("highlights")
+                    })
+                if ev_payload:
+                    self.client.table("events").insert(ev_payload).execute()
+
+            # 8. Facilities
+            fc_res = self.client.table("facilities").select("id", count="exact").limit(1).execute()
+            if getattr(fc_res, "count", 0) == 0:
+                fc_payload = []
+                for fac in data.get("facilities", []):
+                    fc_payload.append({
+                        "name": fac["name"],
+                        "location": fac["location"],
+                        "timings": fac["timings"],
+                        "services": fac["services"]
+                    })
+                if fc_payload:
+                    self.client.table("facilities").insert(fc_payload).execute()
+
+            return {"success": True, "message": "Supabase campus knowledge synced successfully"}
+        except Exception as e:
+            print(f"[SupabaseService] Sync error: {e}")
+            return {"success": False, "error": str(e)}
+
+    # ==========================================
     # SYNC LOCAL DOCUMENTS TO SUPABASE
     # ==========================================
     def sync_local_documents(self) -> Dict[str, Any]:

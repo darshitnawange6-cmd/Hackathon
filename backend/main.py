@@ -4,14 +4,21 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
 from backend.config import PORT, HOST, CORS_ORIGINS, AI_PROVIDER
-from backend.database import init_db
+from backend.database import init_db, ensure_db_initialized
+from backend.services.supabase_service import supabase_service
 from backend.routers import chat, campus, documents
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: Initialize and seed SQLite database
+    # Startup: Initialize and seed local database and sync Supabase if enabled
     print(f"Initializing VocaGuide Campus Database (Active AI Provider: {AI_PROVIDER})...")
-    init_db()
+    ensure_db_initialized()
+    if supabase_service.is_connected:
+        try:
+            supabase_service.sync_campus_knowledge()
+            supabase_service.sync_local_documents()
+        except Exception as e:
+            print(f"[Startup] Supabase sync notice: {e}")
     yield
     print("VocaGuide Assistant Backend shutting down.")
 

@@ -1,168 +1,210 @@
 import sqlite3
 import json
 import os
+import threading
+from typing import Optional
 from pathlib import Path
 from backend.config import DATABASE_PATH, DATA_DIR
 
-def get_db_connection():
+_db_lock = threading.Lock()
+_initialized = False
+
+def is_db_initialized(conn: sqlite3.Connection) -> bool:
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='exams'")
+        if not cursor.fetchone():
+            return False
+        cursor.execute("SELECT COUNT(*) FROM exams")
+        cnt = cursor.fetchone()[0]
+        return cnt > 0
+    except Exception:
+        return False
+
+def ensure_db_initialized():
+    global _initialized
+    with _db_lock:
+        DATABASE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        conn = sqlite3.connect(DATABASE_PATH)
+        conn.row_factory = sqlite3.Row
+        try:
+            if not is_db_initialized(conn):
+                init_db(existing_conn=conn)
+            _initialized = True
+        finally:
+            conn.close()
+
+def get_db_connection() -> sqlite3.Connection:
+    global _initialized
+    if not _initialized or not DATABASE_PATH.exists():
+        ensure_db_initialized()
     DATABASE_PATH.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(DATABASE_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
-def init_db():
-    conn = get_db_connection()
-    cursor = conn.cursor()
+def init_db(existing_conn: Optional[sqlite3.Connection] = None):
+    should_close = False
+    if existing_conn:
+        conn = existing_conn
+    else:
+        DATABASE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        conn = sqlite3.connect(DATABASE_PATH)
+        conn.row_factory = sqlite3.Row
+        should_close = True
 
-    # Create tables
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS exams (
-        id TEXT PRIMARY KEY,
-        subject TEXT NOT NULL,
-        code TEXT NOT NULL,
-        title TEXT NOT NULL,
-        date TEXT NOT NULL,
-        iso_date TEXT,
-        time TEXT NOT NULL,
-        duration TEXT,
-        room TEXT NOT NULL,
-        block TEXT NOT NULL,
-        instructor TEXT NOT NULL,
-        format TEXT,
-        syllabus TEXT
-    );
-    """)
+    try:
+        cursor = conn.cursor()
 
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS timetable (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        day TEXT NOT NULL,
-        time TEXT NOT NULL,
-        subject TEXT NOT NULL,
-        code TEXT,
-        room TEXT NOT NULL,
-        instructor TEXT NOT NULL,
-        type TEXT
-    );
-    """)
+        # Create tables
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS exams (
+            id TEXT PRIMARY KEY,
+            subject TEXT NOT NULL,
+            code TEXT NOT NULL,
+            title TEXT NOT NULL,
+            date TEXT NOT NULL,
+            iso_date TEXT,
+            time TEXT NOT NULL,
+            duration TEXT,
+            room TEXT NOT NULL,
+            block TEXT NOT NULL,
+            instructor TEXT NOT NULL,
+            format TEXT,
+            syllabus TEXT
+        );
+        """)
 
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS faculty (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        title TEXT NOT NULL,
-        department TEXT NOT NULL,
-        email TEXT NOT NULL,
-        phone TEXT,
-        office TEXT NOT NULL,
-        office_hours TEXT NOT NULL,
-        subjects TEXT NOT NULL,
-        research TEXT
-    );
-    """)
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS timetable (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            day TEXT NOT NULL,
+            time TEXT NOT NULL,
+            subject TEXT NOT NULL,
+            code TEXT,
+            room TEXT NOT NULL,
+            instructor TEXT NOT NULL,
+            type TEXT
+        );
+        """)
 
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS classrooms (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL UNIQUE,
-        block TEXT NOT NULL,
-        floor TEXT NOT NULL,
-        capacity INTEGER,
-        facilities TEXT,
-        directions TEXT
-    );
-    """)
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS faculty (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            title TEXT NOT NULL,
+            department TEXT NOT NULL,
+            email TEXT NOT NULL,
+            phone TEXT,
+            office TEXT NOT NULL,
+            office_hours TEXT NOT NULL,
+            subjects TEXT NOT NULL,
+            research TEXT
+        );
+        """)
 
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS notices (
-        id TEXT PRIMARY KEY,
-        title TEXT NOT NULL,
-        category TEXT NOT NULL,
-        priority TEXT NOT NULL,
-        date TEXT NOT NULL,
-        details TEXT NOT NULL,
-        action TEXT
-    );
-    """)
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS classrooms (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE,
+            block TEXT NOT NULL,
+            floor TEXT NOT NULL,
+            capacity INTEGER,
+            facilities TEXT,
+            directions TEXT
+        );
+        """)
 
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS assignments (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        subject TEXT NOT NULL,
-        title TEXT NOT NULL,
-        due_date TEXT NOT NULL,
-        portal TEXT NOT NULL,
-        weightage TEXT,
-        notes TEXT
-    );
-    """)
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS notices (
+            id TEXT PRIMARY KEY,
+            title TEXT NOT NULL,
+            category TEXT NOT NULL,
+            priority TEXT NOT NULL,
+            date TEXT NOT NULL,
+            details TEXT NOT NULL,
+            action TEXT
+        );
+        """)
 
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS events (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL,
-        category TEXT NOT NULL,
-        date TEXT NOT NULL,
-        time TEXT NOT NULL,
-        venue TEXT NOT NULL,
-        organizer TEXT NOT NULL,
-        highlights TEXT
-    );
-    """)
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS assignments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            subject TEXT NOT NULL,
+            title TEXT NOT NULL,
+            due_date TEXT NOT NULL,
+            portal TEXT NOT NULL,
+            weightage TEXT,
+            notes TEXT
+        );
+        """)
 
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS library (
-        key TEXT PRIMARY KEY,
-        title TEXT NOT NULL,
-        content TEXT NOT NULL
-    );
-    """)
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS events (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            category TEXT NOT NULL,
+            date TEXT NOT NULL,
+            time TEXT NOT NULL,
+            venue TEXT NOT NULL,
+            organizer TEXT NOT NULL,
+            highlights TEXT
+        );
+        """)
 
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS facilities (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        location TEXT NOT NULL,
-        timings TEXT NOT NULL,
-        services TEXT NOT NULL
-    );
-    """)
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS library (
+            key TEXT PRIMARY KEY,
+            title TEXT NOT NULL,
+            content TEXT NOT NULL
+        );
+        """)
 
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS conversations (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        session_id TEXT NOT NULL,
-        role TEXT NOT NULL,
-        content TEXT NOT NULL,
-        intent TEXT,
-        entities_json TEXT,
-        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-    """)
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS facilities (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            location TEXT NOT NULL,
+            timings TEXT NOT NULL,
+            services TEXT NOT NULL
+        );
+        """)
 
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS reminders (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        session_id TEXT NOT NULL,
-        title TEXT NOT NULL,
-        due_date TEXT,
-        priority TEXT DEFAULT 'Normal',
-        is_completed INTEGER DEFAULT 0,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-    """)
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS conversations (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            session_id TEXT NOT NULL,
+            role TEXT NOT NULL,
+            content TEXT NOT NULL,
+            intent TEXT,
+            entities_json TEXT,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+        """)
 
-    conn.commit()
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS reminders (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            session_id TEXT NOT NULL,
+            title TEXT NOT NULL,
+            due_date TEXT,
+            priority TEXT DEFAULT 'Normal',
+            is_completed INTEGER DEFAULT 0,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+        """)
 
+        conn.commit()
 
-    # Check if seed data needs to be populated
-    cursor.execute("SELECT COUNT(*) FROM exams;")
-    exam_count = cursor.fetchone()[0]
+        # Check if seed data needs to be populated
+        cursor.execute("SELECT COUNT(*) FROM exams;")
+        exam_count = cursor.fetchone()[0]
 
-    if exam_count == 0:
-        seed_db(conn)
-
-    conn.close()
+        if exam_count == 0:
+            seed_db(conn)
+    finally:
+        if should_close:
+            conn.close()
 
 def seed_db(conn):
     cursor = conn.cursor()
@@ -267,3 +309,9 @@ def seed_db(conn):
 
     conn.commit()
     print("Database successfully initialized and seeded with campus data.")
+
+# Auto-initialize database on module import to ensure clean startup on fresh containers
+try:
+    ensure_db_initialized()
+except Exception as _e:
+    print(f"[Database] Startup auto-initialization notice: {_e}")

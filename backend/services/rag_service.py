@@ -2,10 +2,14 @@ import os
 import re
 from pathlib import Path
 from typing import List, Dict, Any, Optional
+import logging
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import pypdf
+
+# Suppress PDF syntax warnings for clean logs
+logging.getLogger("pypdf").setLevel(logging.ERROR)
 
 from backend.config import DATA_DIR
 from backend.services import knowledge_service
@@ -118,119 +122,137 @@ class RAGKnowledgeService:
             ))
 
     def _ingest_database_records(self):
-        # Ingest Exams
-        exams = knowledge_service.query_exam()
-        for ex in exams:
-            content = (
-                f"Course: {ex['title']} ({ex['code']})\n"
-                f"Exam Date: {ex['date']}\n"
-                f"Time: {ex['time']} ({ex.get('duration', '3 Hours')})\n"
-                f"Location / Hall: {ex['room']} located in {ex['block']}\n"
-                f"Course Instructor: {ex['instructor']}\n"
-                f"Format & Rules: {ex.get('format', 'Standard')}\n"
-                f"Syllabus: {ex.get('syllabus', '')}"
-            )
-            self.chunks.append(RAGChunk(
-                chunk_id=f"db_exam_{ex['id']}",
-                title="Midterm Examination Schedule (Fall 2026)",
-                source_file="campus_exam_roster.db",
-                section=f"Exam: {ex['subject']} ({ex['code']})",
-                content=content,
-                tags=[ex['subject'], ex['code'], ex['room'], "exam", "midterm"]
-            ))
-
-        # Ingest Timetable
-        for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]:
-            slots = knowledge_service.query_timetable(day=day)
-            if slots:
-                slot_text = "\n".join([f"- {s['time']}: {s['subject']} ({s.get('type')}) in {s['room']} with {s['instructor']}" for s in slots])
+        # Ingest Exams safely
+        try:
+            exams = knowledge_service.query_exam()
+            for ex in exams:
+                content = (
+                    f"Course: {ex['title']} ({ex['code']})\n"
+                    f"Exam Date: {ex['date']}\n"
+                    f"Time: {ex['time']} ({ex.get('duration', '3 Hours')})\n"
+                    f"Location / Hall: {ex['room']} located in {ex['block']}\n"
+                    f"Course Instructor: {ex['instructor']}\n"
+                    f"Format & Rules: {ex.get('format', 'Standard')}\n"
+                    f"Syllabus: {ex.get('syllabus', '')}"
+                )
                 self.chunks.append(RAGChunk(
-                    chunk_id=f"db_timetable_{day.lower()}",
-                    title="Official Campus Class Timetable",
-                    source_file="campus_timetable.db",
-                    section=f"{day} Class Schedule",
-                    content=slot_text,
-                    tags=[day, "timetable", "classes", "schedule"]
+                    chunk_id=f"db_exam_{ex['id']}",
+                    title="Midterm Examination Schedule (Fall 2026)",
+                    source_file="campus_exam_roster.db",
+                    section=f"Exam: {ex['subject']} ({ex['code']})",
+                    content=content,
+                    tags=[ex['subject'], ex['code'], ex['room'], "exam", "midterm"]
                 ))
+        except Exception as e:
+            print(f"[RAGService] Note ingesting exams: {e}")
 
-        # Ingest Faculty
-        faculty = knowledge_service.query_faculty()
-        for f in faculty:
-            sub_str = ", ".join(f.get("subjects", [])) if isinstance(f.get("subjects"), list) else str(f.get("subjects", ""))
-            content = (
-                f"Professor: {f['name']} ({f['title']})\n"
-                f"Department: {f['department']}\n"
-                f"Office Location: {f['office']}\n"
-                f"Office Hours: {f['office_hours']}\n"
-                f"Email: {f['email']} | Phone: {f.get('phone', 'N/A')}\n"
-                f"Courses Taught: {sub_str}\n"
-                f"Research: {f.get('research', '')}"
-            )
-            self.chunks.append(RAGChunk(
-                chunk_id=f"db_fac_{f['id']}",
-                title="Faculty Directory & Office Hours",
-                source_file="faculty_directory.db",
-                section=f.get("name"),
-                content=content,
-                tags=[f['name'], f['department'], "faculty", "office hours"]
-            ))
+        # Ingest Timetable safely
+        try:
+            for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]:
+                slots = knowledge_service.query_timetable(day=day)
+                if slots:
+                    slot_text = "\n".join([f"- {s['time']}: {s['subject']} ({s.get('type')}) in {s['room']} with {s['instructor']}" for s in slots])
+                    self.chunks.append(RAGChunk(
+                        chunk_id=f"db_timetable_{day.lower()}",
+                        title="Official Campus Class Timetable",
+                        source_file="campus_timetable.db",
+                        section=f"{day} Class Schedule",
+                        content=slot_text,
+                        tags=[day, "timetable", "classes", "schedule"]
+                    ))
+        except Exception as e:
+            print(f"[RAGService] Note ingesting timetable: {e}")
 
-        # Ingest Notices
-        notices = knowledge_service.query_notices()
-        for n in notices:
-            content = (
-                f"Announcement: {n['title']}\n"
-                f"Priority: {n['priority']} | Category: {n['category']} | Date: {n['date']}\n"
-                f"Details: {n['details']}\n"
-                f"Required Action: {n.get('action', 'None')}"
-            )
-            self.chunks.append(RAGChunk(
-                chunk_id=f"db_notice_{n['id']}",
-                title="Official Campus Bulletins & Notices",
-                source_file="campus_notices.db",
-                section=n['title'],
-                content=content,
-                tags=[n['category'], n['priority'], "notice", "announcement"]
-            ))
+        # Ingest Faculty safely
+        try:
+            faculty = knowledge_service.query_faculty()
+            for f in faculty:
+                sub_str = ", ".join(f.get("subjects", [])) if isinstance(f.get("subjects"), list) else str(f.get("subjects", ""))
+                content = (
+                    f"Professor: {f['name']} ({f['title']})\n"
+                    f"Department: {f['department']}\n"
+                    f"Office Location: {f['office']}\n"
+                    f"Office Hours: {f['office_hours']}\n"
+                    f"Email: {f['email']} | Phone: {f.get('phone', 'N/A')}\n"
+                    f"Courses Taught: {sub_str}\n"
+                    f"Research: {f.get('research', '')}"
+                )
+                self.chunks.append(RAGChunk(
+                    chunk_id=f"db_fac_{f['id']}",
+                    title="Faculty Directory & Office Hours",
+                    source_file="campus_faculty.db",
+                    section=f"Faculty: {f['name']} ({f['department']})",
+                    content=content,
+                    tags=[f['name'], f['department'], "faculty", "office hours"]
+                ))
+        except Exception as e:
+            print(f"[RAGService] Note ingesting faculty: {e}")
 
-        # Ingest Events
-        events = knowledge_service.query_events()
-        for ev in events:
-            content = (
-                f"Event: {ev['title']} ({ev['category']})\n"
-                f"Date & Time: {ev['date']} at {ev['time']}\n"
-                f"Venue: {ev['venue']}\n"
-                f"Organizer: {ev['organizer']}\n"
-                f"Highlights: {ev.get('highlights', '')}"
-            )
-            self.chunks.append(RAGChunk(
-                chunk_id=f"db_event_{ev['id']}",
-                title="Campus Events, Hackathons & Fests",
-                source_file="campus_events.db",
-                section=ev['title'],
-                content=content,
-                tags=[ev['category'], ev['organizer'], "event", "hackathon"]
-            ))
+        # Ingest Notices safely
+        try:
+            notices = knowledge_service.query_notices()
+            for n in notices:
+                content = (
+                    f"Announcement: {n['title']}\n"
+                    f"Priority: {n['priority']} | Category: {n['category']} | Date: {n['date']}\n"
+                    f"Details: {n['details']}\n"
+                    f"Required Action: {n.get('action', 'None')}"
+                )
+                self.chunks.append(RAGChunk(
+                    chunk_id=f"db_notice_{n['id']}",
+                    title="Official Campus Bulletins & Notices",
+                    source_file="campus_notices.db",
+                    section=n['title'],
+                    content=content,
+                    tags=[n['category'], n['priority'], "notice", "announcement"]
+                ))
+        except Exception as e:
+            print(f"[RAGService] Note ingesting notices: {e}")
 
-        # Ingest Library & Facilities
-        lib = knowledge_service.query_library()
-        if lib:
-            content = (
-                f"Library: {lib.get('name')}\n"
-                f"Regular Timings: {lib.get('regular_timings')}\n"
-                f"Exam Period Timings: {lib.get('exam_period_timings')}\n"
-                f"Borrowing Rules: {lib.get('borrowing_rules')}\n"
-                f"Floors: {str(lib.get('floors_guide', ''))}\n"
-                f"Digital Resources: {lib.get('digital_resources')}"
-            )
-            self.chunks.append(RAGChunk(
-                chunk_id="db_library",
-                title="Central Library Guide & Timings",
-                source_file="campus_library.db",
-                section="Central Library Regulations",
-                content=content,
-                tags=["library", "books", "hours", "study zone"]
-            ))
+        # Ingest Events safely
+        try:
+            events = knowledge_service.query_events()
+            for ev in events:
+                content = (
+                    f"Event: {ev['title']} ({ev['category']})\n"
+                    f"Date & Time: {ev['date']} at {ev['time']}\n"
+                    f"Venue: {ev['venue']}\n"
+                    f"Organizer: {ev['organizer']}\n"
+                    f"Highlights: {ev.get('highlights', '')}"
+                )
+                self.chunks.append(RAGChunk(
+                    chunk_id=f"db_event_{ev['id']}",
+                    title="Campus Events, Hackathons & Fests",
+                    source_file="campus_events.db",
+                    section=ev['title'],
+                    content=content,
+                    tags=[ev['category'], ev['organizer'], "event", "hackathon"]
+                ))
+        except Exception as e:
+            print(f"[RAGService] Note ingesting events: {e}")
+
+        # Ingest Library safely
+        try:
+            lib = knowledge_service.query_library()
+            if lib:
+                content = (
+                    f"Library: {lib.get('name')}\n"
+                    f"Regular Timings: {lib.get('regular_timings')}\n"
+                    f"Exam Period Timings: {lib.get('exam_period_timings')}\n"
+                    f"Borrowing Rules: {lib.get('borrowing_rules')}\n"
+                    f"Floors: {str(lib.get('floors_guide', ''))}\n"
+                    f"Digital Resources: {lib.get('digital_resources')}"
+                )
+                self.chunks.append(RAGChunk(
+                    chunk_id="db_library",
+                    title="Central Library Guide & Timings",
+                    source_file="campus_library.db",
+                    section="Central Library Regulations",
+                    content=content,
+                    tags=["library", "books", "hours", "study zone"]
+                ))
+        except Exception as e:
+            print(f"[RAGService] Note ingesting library: {e}")
 
     def retrieve(self, query: str, top_k: int = 3, threshold: float = 0.12) -> Dict[str, Any]:
         """
