@@ -1,0 +1,47 @@
+# NEXUS INSTITUTE OF TECHNOLOGY – DEPARTMENT OF APPLIED SCIENCES & COMPUTER ENGINEERING
+# OFFICIAL COURSE SYLLABI & MIDTERM COVERAGE (FALL 2026)
+
+## COURSE 1: ENGINEERING PHYSICS & ELECTROMAGNETISM (PHY-201)
+- Lead Instructor: Dr. Elena Vance (Head of Department)
+- Midterm Date: Monday, Oct 12, 2026 | 10:00 AM - 01:00 PM | Hall B-204 (Science Block 2nd Floor)
+- Midterm Syllabus Coverage:
+  * Module 1: Oscillations and Wave Mechanics – Harmonic oscillators, damped and forced vibrations, resonance, quality factor.
+  * Module 2: Electromagnetic Theory – Differential and integral forms of Maxwell's Equations, wave propagation in dielectric and conducting media, Poynting vector.
+  * Module 3: Wave Optics & Lasers – Fraunhofer and Fresnel diffraction, thin-film interference, Einstein coefficients, Helium-Neon lasers, semiconductor laser diodes.
+  * Module 4: Fiber Optics – Numerical aperture, acceptance angle, single-mode and multimode dispersion, optical attenuation in silica glass.
+
+## COURSE 2: DISCRETE MATHEMATICS & LINEAR ALGEBRA (MAT-203)
+- Lead Instructor: Prof. Rajesh Sharma
+- Midterm Date: Wednesday, Oct 14, 2026 | 02:00 PM - 05:00 PM | Hall C-102 (Engineering Wing 1st Floor)
+- Midterm Syllabus Coverage:
+  * Unit 1: Graph Theory – Eulerian and Hamiltonian paths, graph coloring, planar graphs, Kuratowski's theorem, Dijkstra's algorithm.
+  * Unit 2: Linear Algebra – Vector spaces, subspace criteria, basis and dimension, linear transformations, rank-nullity theorem.
+  * Unit 3: Matrices & Eigenvalues – Characteristic polynomials, eigenvalues and eigenvectors, Cayley-Hamilton theorem, matrix diagonalization.
+  * Unit 4: Boolean Algebra & Propositional Logic – Truth tables, normal forms (DNF, CNF), Karnaugh maps, predicate calculus.
+
+## COURSE 3: DATA STRUCTURES & ALGORITHMS (CSE-202)
+- Lead Instructor: Prof. Marcus Chen
+- Midterm Date: Friday, Oct 16, 2026 | 10:00 AM - 01:00 PM | Lab 301 & Hall A-101 (Tech Tower 3rd Floor)
+- Midterm Syllabus Coverage:
+  * Module 1: Asymptotic Analysis – Big-O, Big-Omega, Big-Theta notations, recurrence relations, Master Theorem.
+  * Module 2: Trees & Search Trees – Binary Search Trees, AVL Trees (single and double rotations), Red-Black Tree properties, B-Trees and B+ Trees.
+  * Module 3: Graph Algorithms – Breadth-First Search (BFS), Depth-First Search (DFS), topological sorting, strongly connected components (Kosaraju's algorithm).
+  * Module 4: Dynamic Programming & Greedy Algorithms – Longest Common Subsequence (LCS), 0/1 Knapsack, Bellman-Ford, Huffman Coding.
+
+## COURSE 4: ARTIFICIAL INTELLIGENCE & HEURISTIC SEARCH (AIML-301)
+- Lead Instructor: Dr. Priyanshi Patel / Dr. Alan Turing
+- Midterm Date: Monday, Oct 19, 2026 | 10:00 AM - 01:00 PM | Auditorium 1 (Main Admin Building)
+- Midterm Syllabus Coverage:
+  * Part 1: Problem Formulation & Uninformed Search – State spaces, BFS, Uniform Cost Search, Iterative Deepening.
+  * Part 2: Heuristic & Adversarial Search – A* Search, heuristic admissibility and consistency, Minimax search, Alpha-Beta pruning.
+  * Part 3: Constraint Satisfaction Problems (CSP) – Constraint propagation, AC-3 algorithm, backtracking with MRV heuristic.
+  * Part 4: Probabilistic Reasoning – Bayes Rule, Bayesian Belief Networks, conditional independence, Markov Chains.
+
+## COURSE 5: DATABASE MANAGEMENT SYSTEMS (CSE-205)
+- Lead Instructor: Dr. Sarah Jenkins
+- Midterm Date: Wednesday, Oct 21, 2026 | 02:00 PM - 05:00 PM | Hall B-205 (Science Block 2nd Floor)
+- Midterm Syllabus Coverage:
+  * Module 1: Relational Model – Relational algebra operations, tuple relational calculus, ER-to-Relational schema mapping.
+  * Module 2: Advanced SQL – Nested subqueries, window functions, common table expressions (CTEs), triggers and stored procedures.
+  * Module 3: Schema Design & Normalization – Functional dependencies, Armstrong's axioms, 1NF, 2NF, 3NF, and Boyce-Codd Normal Form (BCNF).
+  * Module 4: Transaction Processing & Concurrency – ACID properties, serializability, two-phase locking (2PL) protocol, Deadlock prevention and detection.

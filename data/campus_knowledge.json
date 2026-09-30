@@ -1,0 +1,376 @@
+{
+  "campus_name": "Nexus Institute of Technology",
+  "academic_year": "2026-2027",
+  "current_semester": "Fall 2026",
+  "exams": [
+    {
+      "id": "EX-101",
+      "subject": "Physics",
+      "code": "PHY-201",
+      "title": "Engineering Physics & Electromagnetism",
+      "date": "Monday, Oct 12, 2026",
+      "iso_date": "2026-10-12",
+      "time": "10:00 AM - 01:00 PM",
+      "duration": "3 Hours",
+      "room": "Hall B-204",
+      "block": "Science Block (2nd Floor)",
+      "instructor": "Dr. Elena Vance",
+      "format": "Closed Book, Scientific Calculator Allowed",
+      "syllabus": "Modules 1 to 4: Wave Mechanics, Maxwell's Equations, Lasers and Fiber Optics"
+    },
+    {
+      "id": "EX-102",
+      "subject": "Mathematics",
+      "code": "MAT-203",
+      "title": "Discrete Mathematics & Linear Algebra",
+      "date": "Wednesday, Oct 14, 2026",
+      "iso_date": "2026-10-14",
+      "time": "02:00 PM - 05:00 PM",
+      "duration": "3 Hours",
+      "room": "Hall C-102",
+      "block": "Engineering Wing (1st Floor)",
+      "instructor": "Prof. Rajesh Sharma",
+      "format": "Formula sheet will be provided in exam hall",
+      "syllabus": "Graph Theory, Eigenvalues, Vector Spaces, Boolean Algebra"
+    },
+    {
+      "id": "EX-103",
+      "subject": "Data Structures",
+      "code": "CSE-202",
+      "title": "Data Structures & Algorithms",
+      "date": "Friday, Oct 16, 2026",
+      "iso_date": "2026-10-16",
+      "time": "10:00 AM - 01:00 PM",
+      "duration": "3 Hours",
+      "room": "Lab 301 & Hall A-101",
+      "block": "Tech Tower (3rd Floor)",
+      "instructor": "Prof. Marcus Chen",
+      "format": "Part A: Pen & Paper (1 hr), Part B: Hands-on Coding (2 hrs)",
+      "syllabus": "Trees, Balanced BST, Graphs, Dynamic Programming, Greedy Algorithms"
+    },
+    {
+      "id": "EX-104",
+      "subject": "Artificial Intelligence",
+      "code": "AIML-301",
+      "title": "Artificial Intelligence & Heuristic Search",
+      "date": "Monday, Oct 19, 2026",
+      "iso_date": "2026-10-19",
+      "time": "10:00 AM - 01:00 PM",
+      "duration": "3 Hours",
+      "room": "Auditorium 1",
+      "block": "Main Admin Building (Ground Floor)",
+      "instructor": "Dr. Alan Turing / Dr. Priyanshi Patel",
+      "format": "Open Notes (One double-sided A4 cheat sheet permitted)",
+      "syllabus": "Informed Search, Adversarial Search, CSP, First-Order Logic, Bayes Nets"
+    },
+    {
+      "id": "EX-105",
+      "subject": "Database Systems",
+      "code": "CSE-205",
+      "title": "Database Management Systems",
+      "date": "Wednesday, Oct 21, 2026",
+      "iso_date": "2026-10-21",
+      "time": "02:00 PM - 05:00 PM",
+      "duration": "3 Hours",
+      "room": "Hall B-205",
+      "block": "Science Block (2nd Floor)",
+      "instructor": "Dr. Sarah Jenkins",
+      "format": "Comprehensive, SQL queries & Schema Normalization",
+      "syllabus": "Relational Algebra, SQL, Normal Forms (1NF-BCNF), ACID Properties, Indexing"
+    }
+  ],
+  "timetable": [
+    {
+      "day": "Monday",
+      "slots": [
+        { "time": "09:00 AM - 10:00 AM", "subject": "Physics", "code": "PHY-201", "room": "Hall B-204", "instructor": "Dr. Elena Vance", "type": "Lecture" },
+        { "time": "10:00 AM - 11:00 AM", "subject": "Mathematics", "code": "MAT-203", "room": "Hall C-102", "instructor": "Prof. Rajesh Sharma", "type": "Lecture" },
+        { "time": "11:15 AM - 01:15 PM", "subject": "Data Structures Lab", "code": "CSE-202L", "room": "Lab 301", "instructor": "Prof. Marcus Chen", "type": "Practical" },
+        { "time": "02:00 PM - 03:00 PM", "subject": "Database Systems", "code": "CSE-205", "room": "Hall B-205", "instructor": "Dr. Sarah Jenkins", "type": "Lecture" },
+        { "time": "03:00 PM - 04:00 PM", "subject": "Artificial Intelligence", "code": "AIML-301", "room": "Hall A-101", "instructor": "Dr. Priyanshi Patel", "type": "Lecture" }
+      ]
+    },
+    {
+      "day": "Tuesday",
+      "slots": [
+        { "time": "09:00 AM - 10:00 AM", "subject": "Computer Networks", "code": "CSE-208", "room": "Hall A-102", "instructor": "Prof. Kevin Lin", "type": "Lecture" },
+        { "time": "10:00 AM - 11:00 AM", "subject": "Database Systems", "code": "CSE-205", "room": "Hall B-205", "instructor": "Dr. Sarah Jenkins", "type": "Lecture" },
+        { "time": "11:15 AM - 01:15 PM", "subject": "AI Project Studio", "code": "AIML-301L", "room": "Lab 402 (AI Center)", "instructor": "Dr. Priyanshi Patel", "type": "Studio" },
+        { "time": "02:00 PM - 04:00 PM", "subject": "Physics Laboratory", "code": "PHY-201L", "room": "Science Lab 102", "instructor": "Dr. Elena Vance", "type": "Practical" }
+      ]
+    },
+    {
+      "day": "Wednesday",
+      "slots": [
+        { "time": "09:00 AM - 10:00 AM", "subject": "Mathematics", "code": "MAT-203", "room": "Hall C-102", "instructor": "Prof. Rajesh Sharma", "type": "Lecture" },
+        { "time": "10:00 AM - 11:00 AM", "subject": "Data Structures", "code": "CSE-202", "room": "Hall A-101", "instructor": "Prof. Marcus Chen", "type": "Lecture" },
+        { "time": "11:15 AM - 12:15 PM", "subject": "Technical Writing & Seminar", "code": "HUM-101", "room": "Seminar Hall 2", "instructor": "Prof. Linda Taylor", "type": "Tutorial" },
+        { "time": "01:30 PM - 03:30 PM", "subject": "Database Systems Lab", "code": "CSE-205L", "room": "Lab 302", "instructor": "Dr. Sarah Jenkins", "type": "Practical" }
+      ]
+    },
+    {
+      "day": "Thursday",
+      "slots": [
+        { "time": "09:00 AM - 10:00 AM", "subject": "Artificial Intelligence", "code": "AIML-301", "room": "Hall A-101", "instructor": "Dr. Priyanshi Patel", "type": "Lecture" },
+        { "time": "10:00 AM - 11:00 AM", "subject": "Physics", "code": "PHY-201", "room": "Hall B-204", "instructor": "Dr. Elena Vance", "type": "Lecture" },
+        { "time": "11:15 AM - 01:15 PM", "subject": "Algorithms Problem Solving", "code": "CSE-202T", "room": "Hall C-102", "instructor": "Prof. Marcus Chen", "type": "Tutorial" },
+        { "time": "02:00 PM - 04:00 PM", "subject": "Open Elective / Minor", "code": "ELC-300", "room": "Auditorium 2", "instructor": "Guest Faculty", "type": "Elective" }
+      ]
+    },
+    {
+      "day": "Friday",
+      "slots": [
+        { "time": "09:00 AM - 10:00 AM", "subject": "Mathematics", "code": "MAT-203", "room": "Hall C-102", "instructor": "Prof. Rajesh Sharma", "type": "Lecture" },
+        { "time": "10:00 AM - 11:00 AM", "subject": "Computer Networks", "code": "CSE-208", "room": "Hall A-102", "instructor": "Prof. Kevin Lin", "type": "Lecture" },
+        { "time": "11:15 AM - 01:15 PM", "subject": "Capstone Project & Mentorship", "code": "PRJ-399", "room": "Incubation Hub 1st Floor", "instructor": "All Mentors", "type": "Project" },
+        { "time": "02:30 PM - 04:30 PM", "subject": "Club & Extracurricular Activities", "code": "ACT-100", "room": "Student Activity Center", "instructor": "Student Council", "type": "Activity" }
+      ]
+    }
+  ],
+  "faculty": [
+    {
+      "name": "Dr. Elena Vance",
+      "title": "Associate Professor & Head of Department",
+      "department": "Department of Physics & Applied Sciences",
+      "email": "elena.vance@nexus.edu",
+      "phone": "+1 (555) 019-2831",
+      "office": "Science Block, Room S-214 (2nd Floor)",
+      "office_hours": "Monday & Wednesday, 02:00 PM - 04:00 PM",
+      "subjects": ["Physics (PHY-201)", "Quantum Mechanics", "Electromagnetism"],
+      "research": "Photonics, Quantum Materials"
+    },
+    {
+      "name": "Prof. Rajesh Sharma",
+      "title": "Professor of Applied Mathematics",
+      "department": "Department of Mathematics & Statistics",
+      "email": "rajesh.sharma@nexus.edu",
+      "phone": "+1 (555) 019-4920",
+      "office": "Engineering Wing, Room M-108 (1st Floor)",
+      "office_hours": "Tuesday & Thursday, 11:00 AM - 01:00 PM",
+      "subjects": ["Mathematics (MAT-203)", "Linear Algebra", "Numerical Methods"],
+      "research": "Graph Theory, Cryptographic Mathematics"
+    },
+    {
+      "name": "Prof. Marcus Chen",
+      "title": "Assistant Professor",
+      "department": "Computer Science & Engineering",
+      "email": "marcus.chen@nexus.edu",
+      "phone": "+1 (555) 019-7712",
+      "office": "Tech Tower, Room T-402 (4th Floor)",
+      "office_hours": "Daily Monday - Thursday, 03:00 PM - 05:00 PM",
+      "subjects": ["Data Structures (CSE-202)", "Algorithm Analysis", "Competitive Programming"],
+      "research": "High-Performance Computing, Graph Algorithms"
+    },
+    {
+      "name": "Dr. Sarah Jenkins",
+      "title": "Associate Professor",
+      "department": "Computer Science & Engineering",
+      "email": "sarah.jenkins@nexus.edu",
+      "phone": "+1 (555) 019-6345",
+      "office": "Tech Tower, Room T-305 (3rd Floor)",
+      "office_hours": "Tuesday & Friday, 01:00 PM - 03:00 PM",
+      "subjects": ["Database Systems (CSE-205)", "Cloud Data Architecture"],
+      "research": "Distributed Database Systems, NoSQL Scaling"
+    },
+    {
+      "name": "Dr. Priyanshi Patel",
+      "title": "Assistant Professor & AI Lab Director",
+      "department": "Artificial Intelligence & Data Science",
+      "email": "priyanshi.patel@nexus.edu",
+      "phone": "+1 (555) 019-8901",
+      "office": "Tech Tower, Room T-415 (4th Floor)",
+      "office_hours": "Wednesday & Friday, 10:00 AM - 12:00 PM",
+      "subjects": ["Artificial Intelligence (AIML-301)", "Deep Learning", "NLP"],
+      "research": "Conversational Agents, Multimodal Foundation Models"
+    }
+  ],
+  "classrooms": [
+    {
+      "name": "Hall B-204",
+      "block": "Science Block",
+      "floor": "2nd Floor",
+      "capacity": 120,
+      "facilities": ["Smart Projector", "Mic Audio System", "Tiered Seating", "Air Conditioned"],
+      "directions": "Take Elevator B or the central staircase to the 2nd Floor of Science Block. Walk straight down the hallway past Lab 202; Room B-204 is on the right."
+    },
+    {
+      "name": "Hall C-102",
+      "block": "Engineering Wing",
+      "floor": "1st Floor",
+      "capacity": 150,
+      "facilities": ["Dual HD Displays", "Whiteboard Wall", "Wheelchair Accessible"],
+      "directions": "Enter through Engineering Wing main portal. Turn left after the reception desk; Hall C-102 is adjacent to the Faculty Lounge."
+    },
+    {
+      "name": "Lab 301",
+      "block": "Tech Tower",
+      "floor": "3rd Floor",
+      "capacity": 65,
+      "facilities": ["High-Spec Linux Workstations", "Gigabit LAN", "Dual Monitors"],
+      "directions": "Take the express elevator in Tech Tower to the 3rd Floor. Head toward the West Wing glass doors."
+    },
+    {
+      "name": "Hall B-205",
+      "block": "Science Block",
+      "floor": "2nd Floor",
+      "capacity": 120,
+      "facilities": ["Smart Projector", "Surround Sound", "Lecture Recording"],
+      "directions": "Located right opposite to Hall B-204 on the 2nd Floor of Science Block."
+    },
+    {
+      "name": "Auditorium 1",
+      "block": "Main Admin Building",
+      "floor": "Ground Floor",
+      "capacity": 600,
+      "facilities": ["Stage Acoustics", "Dual Laser Projectors", "Live Stream Console"],
+      "directions": "Directly accessible from Main Quadrangle entrance opposite the Fountain Plaza."
+    }
+  ],
+  "notices": [
+    {
+      "id": "NOT-001",
+      "title": "URGENT: Fall Semester Midterm Exam Schedule Released",
+      "category": "Academics",
+      "priority": "High",
+      "date": "2026-09-28",
+      "details": "The official midterm examination timetable for all undergraduate programs has been published. Midterms commence on Monday, Oct 12, 2026. Hall tickets will be downloadable from student portal starting Oct 5.",
+      "action": "Download Exam Admit Card from student portal."
+    },
+    {
+      "id": "NOT-002",
+      "title": "Annual 36-Hour Hackathon 'HackSphere 2026' Registrations Open",
+      "category": "Events & Competitions",
+      "priority": "High",
+      "date": "2026-09-27",
+      "details": "Registration is open for HackSphere 2026, the flagship national hackathon taking place Oct 24-25 in the Main Auditorium. Cash prizes pool worth $15,000 across Voice AI, Web3, and GreenTech tracks.",
+      "action": "Register teams of up to 4 members before Oct 15 at hacksphere.nexus.edu"
+    },
+    {
+      "id": "NOT-003",
+      "title": "Extended Central Library Hours During Exam Period",
+      "category": "Library",
+      "priority": "Medium",
+      "date": "2026-09-26",
+      "details": "To support students preparing for upcoming examinations, the Central Library and 3rd Floor Quiet Study Lounges will operate 24/7 from October 8 through October 23. Free coffee will be served at midnight in the mezzanine.",
+      "action": "Access requires active Student ID tap at security gate after 10:00 PM."
+    },
+    {
+      "id": "NOT-004",
+      "title": "Scheduled Campus Wi-Fi & Network Maintenance",
+      "category": "IT Services",
+      "priority": "Medium",
+      "date": "2026-09-25",
+      "details": "IT Infrastructure is upgrading core access points to Wi-Fi 7 on Saturday, Oct 3 between 11:00 PM and 03:00 AM. Campus-wide Wi-Fi ('Nexus-Student') and Moodle may experience intermittent downtime.",
+      "action": "Save online submissions prior to 11:00 PM Saturday."
+    },
+    {
+      "id": "NOT-005",
+      "title": "Fall Semester Tuition Balance & Fee Payment Deadline",
+      "category": "Finance",
+      "priority": "High",
+      "date": "2026-09-22",
+      "details": "The final date for clearance of 2nd installment semester dues without late penalty is October 25, 2026. Payments can be submitted via NetBanking, UPI, or Finance Office Counter 3.",
+      "action": "Pay dues via accounts portal to prevent semester registration holds."
+    }
+  ],
+  "assignments": [
+    {
+      "subject": "Data Structures",
+      "title": "Project 2: Graph Routing & A* Search Simulator",
+      "due_date": "Thursday, Oct 08, 2026 at 11:59 PM",
+      "portal": "GitHub Classroom / Canvas",
+      "weightage": "15% of Final Grade",
+      "notes": "Late submissions incur 10% penalty per 24 hours. Code must pass all automated test suites."
+    },
+    {
+      "subject": "Physics",
+      "title": "Lab Report: Michelson Interferometer & Laser Wavelength Measurement",
+      "due_date": "Friday, Oct 09, 2026 at 05:00 PM",
+      "portal": "Physical Submission in Science Lab S-102 Drop Box",
+      "weightage": "10% of Final Grade",
+      "notes": "Include error propagation graphs and signed observation sheet."
+    },
+    {
+      "subject": "Database Systems",
+      "title": "Milestone 1: E-Commerce Relational Schema & 3NF Normalization",
+      "due_date": "Sunday, Oct 11, 2026 at 11:59 PM",
+      "portal": "Moodle Assignment Portal",
+      "weightage": "10% of Final Grade",
+      "notes": "Submit ER diagram PDF and SQL DDL scripts with foreign key constraints."
+    }
+  ],
+  "events": [
+    {
+      "title": "HackSphere 2026 – Flagship 36-Hour Hackathon",
+      "category": "Hackathon",
+      "date": "October 24 - 25, 2026",
+      "time": "Kickoff at 09:00 AM Saturday",
+      "venue": "Main Auditorium & Student Center",
+      "organizer": "Nexus Developer Student Club",
+      "highlights": "Keynote by Google AI Researcher, Sponsor booths, Free swag, Meals provided"
+    },
+    {
+      "title": "AI & Large Language Models in Industry Workshop",
+      "category": "Workshop",
+      "date": "Wednesday, Oct 07, 2026",
+      "time": "04:30 PM - 06:30 PM",
+      "venue": "Seminar Hall 1, Tech Tower",
+      "organizer": "Department of AI & Data Science",
+      "highlights": "Hands-on fine-tuning and agentic AI pipelines with PyTorch and LangChain."
+    },
+    {
+      "title": "Annual Autumn Inter-Collegiate Cultural Festival 'Aura 2026'",
+      "category": "Cultural",
+      "date": "November 14 - 16, 2026",
+      "time": "Daily from 05:00 PM onwards",
+      "venue": "Amphitheatre & Main Quadrangle",
+      "organizer": "Student Cultural Council",
+      "highlights": "Battle of the Bands, Fashion Walk, DJ Night, Food Carnival"
+    }
+  ],
+  "library": {
+    "name": "Nexus Central Library & Digital Learning Commons",
+    "regular_timings": "Monday - Saturday: 08:00 AM - 10:00 PM | Sunday: 10:00 AM - 06:00 PM",
+    "exam_period_timings": "Open 24/7 during midterm & final exam periods with valid student ID tap",
+    "borrowing_rules": "Undergraduates can borrow up to 4 books for 14 days. Renewable twice online.",
+    "floors_guide": {
+      "ground_floor": "Circulation desk, New arrivals display, Cafeteria patio",
+      "first_floor": "General reading hall, Reference section, Print & scan station",
+      "second_floor": "Engineering, CS, and Physical sciences stack, Group discussion pods",
+      "third_floor": "Silent study sanctuary (Strict no-talking zone), Research cubicles"
+    },
+    "digital_resources": "Access IEEE Xplore, ACM Digital Library, SpringerLink, and ScienceDirect using campus credentials."
+  },
+  "facilities": [
+    {
+      "name": "Central Food Court & Cafeteria",
+      "location": "Student Activity Center (Ground Floor)",
+      "timings": "07:30 AM - 10:30 PM daily",
+      "services": "Multi-cuisine food stalls (Subway, Dosa Plaza, Healthy Bowls, Cafe Coffee Day), cashless digital payments."
+    },
+    {
+      "name": "Campus Health & Medical Center",
+      "location": "Adjacent to Residential Hall 2",
+      "timings": "OPD: 09:00 AM - 06:00 PM | Emergency & Ambulance: 24/7",
+      "services": "Resident doctors, emergency first-aid, free basic prescription medication, emergency helpline: ext 911."
+    },
+    {
+      "name": "Sports Complex & Gymnasium",
+      "location": "South Campus Sports Arena",
+      "timings": "Morning: 06:00 AM - 09:00 AM | Evening: 04:00 PM - 09:00 PM",
+      "services": "Modern gym with trainers, indoor badminton courts, Olympic-sized swimming pool, basketball courts."
+    },
+    {
+      "name": "Campus Shuttle Bus Service",
+      "location": "Main Gate 1 Shuttle Stop",
+      "timings": "Every 15 minutes between 07:00 AM and 09:30 PM",
+      "services": "Free electric shuttle connects Metro Station, Academic Block, Sports Arena, and Hostels."
+    },
+    {
+      "name": "ATM & Banking Kiosk",
+      "location": "Admin Block Arcade",
+      "timings": "24 Hours",
+      "services": "State Bank & Chase ATMs, passbook kiosk, cash deposit machine."
+    }
+  ]
+}
