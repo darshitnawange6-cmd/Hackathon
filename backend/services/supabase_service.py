@@ -25,9 +25,11 @@ class SupabaseService:
         try:
             self.client = create_client(SUPABASE_URL, SUPABASE_KEY)
             # Test ping
-            self.client.table("college_documents").select("id").limit(1).execute()
+            test_res = self.client.table("college_documents").select("id").limit(1).execute()
+            if not isinstance(test_res.data, list):
+                raise ValueError(f"Supabase endpoint did not return JSON records. Response type: {type(test_res.data)}")
             self.is_connected = True
-            print("[SupabaseService] Successfully connected to live Supabase project.")
+            print(f"[SupabaseService] Successfully connected to live Supabase project ({SUPABASE_URL}).")
         except Exception as e:
             print(f"[SupabaseService] Connection error: {e}. Falling back to local knowledge engine.")
             self.client = None

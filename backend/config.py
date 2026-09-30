@@ -1,4 +1,5 @@
 import os
+import re
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -43,7 +44,13 @@ elif AI_PROVIDER == "groq" and not GROQ_API_KEY:
 
 MODEL_NAME = os.getenv("MODEL_NAME", "gemini-1.5-flash" if AI_PROVIDER == "gemini" else ("gpt-4o-mini" if AI_PROVIDER == "openai" else "demo-engine"))
 
-# Supabase configuration
-SUPABASE_URL = os.getenv("SUPABASE_URL", "").strip()
+# Supabase configuration with automatic URL normalization
+_raw_supabase_url = os.getenv("SUPABASE_URL", "").strip()
+_dashboard_match = re.search(r"supabase\.com/dashboard/project/([a-zA-Z0-9_-]+)", _raw_supabase_url)
+if _dashboard_match:
+    SUPABASE_URL = f"https://{_dashboard_match.group(1)}.supabase.co"
+else:
+    SUPABASE_URL = _raw_supabase_url.rstrip("/")
+
 SUPABASE_KEY = os.getenv("SUPABASE_KEY", "").strip()
 IS_SUPABASE_ENABLED = bool(SUPABASE_URL and SUPABASE_KEY)

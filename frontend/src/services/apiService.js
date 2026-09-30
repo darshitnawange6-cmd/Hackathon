@@ -1,7 +1,10 @@
-// Configurable API base URL: defaults to '/api' for local dev and reverse-proxy setups,
-// or points to external backend if VITE_API_URL is specified in production (e.g. on Vercel).
-export const API_BASE = import.meta.env.VITE_API_URL
-  ? `${import.meta.env.VITE_API_URL.replace(/\/+$/, '')}/api`
+// Configurable API base URL:
+// 1. If VITE_API_URL is explicitly set (e.g. in Vercel env vars), use it.
+// 2. In production builds, default to the live Render backend: https://vocaguide-api.onrender.com
+// 3. In local development, default to '/api' (proxied by Vite to http://127.0.0.1:8000).
+const rawApiUrl = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://vocaguide-api.onrender.com' : '');
+export const API_BASE = rawApiUrl
+  ? `${rawApiUrl.replace(/\/+$/, '')}/api`
   : '/api';
 
 export const apiService = {

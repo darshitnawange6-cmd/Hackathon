@@ -27,7 +27,7 @@ def query_exam(subject: Optional[str] = None) -> List[Dict[str, Any]]:
     # 1. Prioritize live Supabase knowledge base if connected
     if supabase_service.is_connected:
         supa_results = supabase_service.query_exams(subject)
-        if supa_results:
+        if isinstance(supa_results, list) and len(supa_results) > 0:
             return supa_results
 
     # 2. Resilient fallback to SQLite database
@@ -48,7 +48,7 @@ def query_timetable(day: Optional[str] = None, subject: Optional[str] = None) ->
     # 1. Prioritize live Supabase knowledge base if connected
     if supabase_service.is_connected:
         supa_results = supabase_service.query_timetable(day=day, subject=subject)
-        if supa_results:
+        if isinstance(supa_results, list) and len(supa_results) > 0:
             return supa_results
 
     # 2. Resilient fallback to SQLite database
@@ -73,7 +73,7 @@ def query_faculty(name_or_subject: Optional[str] = None) -> List[Dict[str, Any]]
     # 1. Prioritize live Supabase knowledge base if connected
     if supabase_service.is_connected:
         supa_results = supabase_service.query_faculty(name_or_subject)
-        if supa_results:
+        if isinstance(supa_results, list) and len(supa_results) > 0:
             return supa_results
 
     # 2. Resilient fallback to SQLite database
@@ -108,7 +108,7 @@ def query_classroom(room_name: Optional[str] = None) -> List[Dict[str, Any]]:
     # 1. Prioritize live Supabase knowledge base if connected
     if supabase_service.is_connected:
         supa_results = supabase_service.query_classrooms(room_name)
-        if supa_results:
+        if isinstance(supa_results, list) and len(supa_results) > 0:
             return supa_results
 
     # 2. Resilient fallback to SQLite database
@@ -138,7 +138,7 @@ def query_notices(category: Optional[str] = None) -> List[Dict[str, Any]]:
     # 1. Prioritize live Supabase knowledge base if connected
     if supabase_service.is_connected:
         supa_results = supabase_service.query_notices(category)
-        if supa_results:
+        if isinstance(supa_results, list) and len(supa_results) > 0:
             return supa_results
 
     # 2. Resilient fallback to SQLite database
@@ -159,7 +159,7 @@ def query_assignments(subject: Optional[str] = None) -> List[Dict[str, Any]]:
     # 1. Prioritize live Supabase knowledge base if connected
     if supabase_service.is_connected:
         supa_results = supabase_service.query_assignments(subject)
-        if supa_results:
+        if isinstance(supa_results, list) and len(supa_results) > 0:
             return supa_results
 
     # 2. Resilient fallback to SQLite database
@@ -180,7 +180,7 @@ def query_events() -> List[Dict[str, Any]]:
     # 1. Prioritize live Supabase knowledge base if connected
     if supabase_service.is_connected:
         supa_results = supabase_service.query_events()
-        if supa_results:
+        if isinstance(supa_results, list) and len(supa_results) > 0:
             return supa_results
 
     # 2. Resilient fallback to SQLite database
@@ -211,7 +211,7 @@ def query_facilities(name: Optional[str] = None) -> List[Dict[str, Any]]:
     # 1. Prioritize live Supabase knowledge base if connected
     if supabase_service.is_connected:
         supa_results = supabase_service.query_facilities(name)
-        if supa_results:
+        if isinstance(supa_results, list) and len(supa_results) > 0:
             return supa_results
 
     # 2. Resilient fallback to SQLite database
